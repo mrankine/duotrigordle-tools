@@ -13,6 +13,8 @@ Example usage:
 - `./report-solvable PITON` prints the 43 solvable boards. For example, if the game responds to `PITON` with Green Yellow Black Green Black, the solution must be `PRIOR`.
 - `./possible-words -s PITON BGBGB` reports that there are four possible solutions if the response to `PITON` is Black Green Black Green Black. They are `RIGOR`, `VIGOR`, `VISOR`, and `WIDOW`.
 
+_Number of solvable boards_ is only one metric of guess quality. More sophisticated approaches are possible. See, for example, [There's A New Best Starter For Perfect Duotrigordle](https://www.youtube.com/watch?v=Hk5BNh1DtTU) (24 May 2022, uses old word lists).
+
 ## Build and run
 
 Requires [Go](https://go.dev/doc/install), and a terminal with ANSI colour support.
