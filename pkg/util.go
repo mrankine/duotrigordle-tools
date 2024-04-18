@@ -43,29 +43,32 @@ func ParseResponse(input string) (Response, error) {
 }
 
 func FormatResponse(word string, response Response) string {
-	var b strings.Builder
-	for i, c := range word {
+	var r strings.Builder
+	for i, char := range word {
 		if response&(1<<(Length+(Length-i-1))) != 0 {
-			fmt.Fprintf(&b, "\x1b[42;30m") // Correct
+			fmt.Fprintf(&r, "\x1b[42;30m") // Correct
 		} else if response&(1<<(Length-i-1)) != 0 {
-			fmt.Fprintf(&b, "\x1b[43;30m") // Present
+			fmt.Fprintf(&r, "\x1b[43;30m") // Present
 		} else {
-			fmt.Fprintf(&b, "\x1b[40;37m") // Absent
+			fmt.Fprintf(&r, "\x1b[40;37m") // Absent
 		}
-		fmt.Fprintf(&b, "%c\x1b[0m", c)
+		fmt.Fprintf(&r, "%c\x1b[0m", char)
 	}
-	return b.String()
+	return r.String()
 }
 
-func FormatSequence(guesses []string, solution string) string {
-	r := []string{}
-	for _, guess := range guesses {
-		r = append(r, FormatResponse(guess, CheckGuess(guess, solution)))
+func FormatCodes(response Response) string {
+	var c strings.Builder
+	for i := range Length {
+		if response&(1<<(Length+(Length-i-1))) != 0 {
+			fmt.Fprintf(&c, "G") // Correct
+		} else if response&(1<<(Length-i-1)) != 0 {
+			fmt.Fprintf(&c, "Y") // Present
+		} else {
+			fmt.Fprintf(&c, "B") // Absent
+		}
 	}
-	if solution != "" {
-		r = append(r, fmt.Sprintf("\x1b[1;32m%s\x1b[0m", solution))
-	}
-	return strings.Join(r, " ")
+	return c.String()
 }
 
 func FormatList(words []string, max int, separator string) string {
@@ -76,6 +79,19 @@ func FormatList(words []string, max int, separator string) string {
 		suffix = fmt.Sprintf(" … %d more", len(words)-max)
 	}
 	return fmt.Sprintf("%s%s", strings.Join(words[:count], separator), suffix)
+}
+
+func PrintBoard(guesses []string, responses []Response, solution string, codes bool) {
+	for i, guess := range guesses {
+		fmt.Print(FormatResponse(guess, responses[i]))
+		if codes {
+			fmt.Printf("\t%s", FormatCodes(responses[i]))
+		}
+		fmt.Println()
+	}
+	if solution != "" {
+		fmt.Printf("\x1b[1;32m%s\x1b[0m\n", solution)
+	}
 }
 
 type parserFunc func(string) (string, bool)

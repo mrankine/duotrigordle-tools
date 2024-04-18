@@ -14,7 +14,7 @@ func main() {
 	dictGuesses, dictSolutions := pkg.ReadWordLists()
 
 	var showPossible bool
-	flag.BoolVar(&showPossible, "s", false, "show solutions and valid guesses")
+	flag.BoolVar(&showPossible, "w", false, "show solutions and valid guesses")
 	flag.BoolVar(&showPossible, "show-words", false, "show solutions and valid guesses")
 	flag.Parse()
 

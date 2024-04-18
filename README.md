@@ -1,19 +1,22 @@
 # duotrigordle tools
 
-This repo contains four Go programs which may be useful for players of [Duotrigordle](https://duotrigordle.com) and similar word games.
+This repo contains five Go programs which may be useful for players of [Duotrigordle](https://duotrigordle.com) and similar word games.
 
 - `maximise-solvable` suggests a first guess which maximises the expected number of _solvable_ boards. A board is _solvable_ if there is only one remaining possible solution. The first guess may or may not also be a valid solution.
+- `maximise-solvable-pair` is as above, but suggests a _pair_ of starting guesses.
 - `report-solvable` reports _solvable_ boards for a given sequence of one or more guesses.
 - `possible-words` reports the remaining possible solutions and guesses after a sequence of guesses and responses.
 - `guess` reports the game's response to a guess, given the solution.
 
-Example usage:
+Example usage (results based on `2024-01-14` word list):
 
-- based on the latest word list, `./maximise-solvable` reports `PITON` is the guess which produces the most solvable boards (43).
+- `./maximise-solvable` reports `PITON` is the guess which maximises solvable boards (43).
 - `./report-solvable PITON` prints the 43 solvable boards. For example, if the game responds to `PITON` with Green Yellow Black Green Black, the solution must be `PRIOR`.
-- `./possible-words -s PITON BGBGB` reports that there are four possible solutions if the response to `PITON` is Black Green Black Green Black. They are `RIGOR`, `VIGOR`, `VISOR`, and `WIDOW`.
+- `./possible-words -w PITON BGBGB` reports that there are four possible solutions if the response to `PITON` is Black Green Black Green Black. They are `RIGOR`, `VIGOR`, `VISOR`, and `WIDOW`.
+- `./guess PITON PRIOR` reports Green Yellow Black Green Black.
+- `./maximise-solvable-pair` reports the pair `CANOE` `SPRIT` maximises solvable boards (667, >25% of the total). The algorithm is not at all optimised. It took ~35 minutes on a Ryzen 3 laptop.
 
-_Number of solvable boards_ is only one metric of guess quality. More sophisticated approaches are possible. See, for example, [There's A New Best Starter For Perfect Duotrigordle](https://www.youtube.com/watch?v=Hk5BNh1DtTU) (24 May 2022, uses old word lists).
+**Important caveat**: _number of solvable boards_ is only one metric of guess quality. More sophisticated approaches are possible. See, for example, [There's A New Best Starter For Perfect Duotrigordle](https://www.youtube.com/watch?v=Hk5BNh1DtTU) (24 May 2022, uses old word lists).
 
 ## Build and run
 
@@ -34,11 +37,15 @@ To run:
 ```
 
 ```bash
-./report-solvable guess [guess...]
+./maximise-solvable-pair
 ```
 
 ```bash
-./possible-words [-s|--show-words] guess response [guess response ...]
+./report-solvable [-c|--show-codes] guess [guess...]
+```
+
+```bash
+./possible-words [-w|--show-words] guess response [guess response ...]
 ```
 
 ```bash
@@ -53,7 +60,6 @@ Where:
   - `GYGBB` corresponds to Green, Yellow, Green, Black, Black
   - `21200` same as above
   - `Y` all positions were Yellow
-
 
 ## Word lists
 
